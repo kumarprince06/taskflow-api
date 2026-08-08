@@ -2,11 +2,11 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/taskflow
     username: taskflow_user
-    password: 123456789
+    password: "123456789"
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: validate   # We'll create tables manually or with Flyway later
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
