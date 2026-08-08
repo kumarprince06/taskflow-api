@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/taskflow
     username: taskflow_user
-    password: taskflow_pass
+    password: 123456789
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
