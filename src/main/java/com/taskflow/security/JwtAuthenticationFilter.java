@@ -32,16 +32,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token  = extractJwtRequest(request);
 
         if (token != null){
-            String email = jwtService.extractEmail(token);
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if (jwtService.isTokenValid(token, email)){
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            try {
+                String email = jwtService.extractEmail(token);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    if (jwtService.isTokenValid(token, email)){
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
+            } catch (Exception e) {
+                // If token is expired, malformed, or tampered with, just fall through
+                // The user will remain unauthenticated, allowing Spring Security to return a 401
             }
         }
 
