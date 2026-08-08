@@ -14,17 +14,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private RefreshTokenRepository refreshTokenRepository;
-    private JwtService jwtService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtService jwtService;
 
     @Transactional
     public RefreshToken createRefreshToken(User user){
 
         // Invalidate old Token if exists
-        refreshTokenRepository.deletedByUser_Id(user.getId());
+        refreshTokenRepository.deleteByUserId(user.getId());
 
         String token = UUID.randomUUID().toString();
-        long refreshExpiration = 7 * 24 * 60 * 1000L; //7 days
+        long refreshExpiration = 7 * 24 * 60 * 60 * 1000L; //7 days
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)

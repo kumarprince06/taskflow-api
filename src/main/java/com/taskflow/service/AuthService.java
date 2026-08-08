@@ -1,6 +1,7 @@
 package com.taskflow.service;
 
 import com.taskflow.dto.request.LoginRequest;
+import java.util.Set;
 import com.taskflow.dto.request.RefreshTokenRequest;
 import com.taskflow.dto.request.RegisterRequest;
 import com.taskflow.dto.response.AuthResponse;
@@ -47,6 +48,7 @@ public class AuthService {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .roles(Set.of(userRole))
                 .build();
 
         return userRepository.save(user);
@@ -77,7 +79,7 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
                 .orElseThrow(() -> new TokenRefreshException("Refresh token not found."));
 
-        if (refreshToken.isRevoked() || refreshTokenService.verifyExpiration(refreshToken)){
+        if (refreshToken.isRevoked() || !refreshTokenService.verifyExpiration(refreshToken)){
             throw  new TokenRefreshException("Refresh token expired or revoked");
         }
 
